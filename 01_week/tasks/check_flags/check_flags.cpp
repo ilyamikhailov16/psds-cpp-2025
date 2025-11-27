@@ -1,5 +1,7 @@
 #include <cstdint>
-#include <stdexcept>
+#include <iostream>
+#include <vector>
+#include <string>
 
 
 enum class CheckFlags : uint8_t {
@@ -14,5 +16,42 @@ enum class CheckFlags : uint8_t {
 };
 
 void PrintCheckFlags(CheckFlags flags) {
-    throw std::runtime_error{"Not implemented"};
+    if (flags == CheckFlags::NONE) {
+        std::cout << "[]";
+        return;
+    }
+
+    if ((static_cast<uint8_t>(flags) & ~static_cast<uint8_t>(CheckFlags::ALL)) != 0) {
+        std::cout << "";
+        return;
+    }
+
+    std::vector<std::string> set_flags;
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::TIME)) != 0) {
+        set_flags.push_back("TIME");
+    }
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::DATE)) != 0) {
+        set_flags.push_back("DATE");
+    }
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::USER)) != 0) {
+        set_flags.push_back("USER");
+    }
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::CERT)) != 0) {
+        set_flags.push_back("CERT");
+    }
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::KEYS)) != 0) {
+        set_flags.push_back("KEYS");
+    }
+    if ((static_cast<uint8_t>(flags) & static_cast<uint8_t>(CheckFlags::DEST)) != 0) {
+        set_flags.push_back("DEST");
+    }
+
+    std::cout << "[";
+    for (int i = 0; i < set_flags.size(); i++) {
+        std::cout << set_flags[i];
+        if (i < set_flags.size() - 1) {
+            std::cout << ",";
+        }
+    }
+    std::cout << "]";
 }

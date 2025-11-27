@@ -2,6 +2,6 @@
 
 
 int main() {
-    std::cout << "I wait your unbelievable code here" << std::endl;
+    std::cout << "My unbelievable code here" << std::endl;
     return 0;
 }
