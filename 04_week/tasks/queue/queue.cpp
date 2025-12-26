@@ -138,7 +138,7 @@ bool Queue::eqArrays(const std::vector<int>& a, const std::vector<int>& b) const
     if (a.size() != b.size()){ return false; }
     if (a.empty() && b.empty()){ return true; }
 
-    for (int i = 0; i < a.size(); ++i) {
+    for (size_t i = 0; i < a.size(); ++i) {
         if (a[i] != b[i]) {
             return false;
         }

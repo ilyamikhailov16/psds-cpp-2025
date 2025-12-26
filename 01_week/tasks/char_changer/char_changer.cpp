@@ -2,7 +2,7 @@
 #include <cctype>
 
 
-size_t CharChanger(char array[], size_t size, char delimiter = ' ') {
+size_t CharChanger(char array[], size_t, char delimiter = ' ') {
     int counter = 0; // Счётчик повторяющихся символов
     int write = 0;   // Указатель для записи обработанного символа
     int read = 0;    // Указатель для чтения следующего элемента из массива

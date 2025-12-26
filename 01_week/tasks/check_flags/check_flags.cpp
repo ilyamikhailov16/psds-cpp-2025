@@ -47,7 +47,7 @@ void PrintCheckFlags(CheckFlags flags) {
     }
 
     std::cout << "[";
-    for (int i = 0; i < set_flags.size(); i++) {
+    for (size_t i = 0; i < set_flags.size(); i++) {
         std::cout << set_flags[i];
         if (i < set_flags.size() - 1) {
             std::cout << ",";

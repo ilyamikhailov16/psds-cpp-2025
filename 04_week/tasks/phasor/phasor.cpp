@@ -17,8 +17,8 @@ class Phasor
 public:
     Phasor() : real(0.0), imag(0.0) {}
     Phasor(double amplitude, double phase) : real(amplitude * std::cos(phase)), imag(amplitude * std::sin(phase)) {}
-    Phasor(double amplitude, double phase, ExpTag tag) : Phasor(amplitude, phase) {}
-    Phasor(double amplitude, double phase, DegTag tag) : Phasor(amplitude, M_PI * phase / 180) {}
+    Phasor(double amplitude, double phase, ExpTag) : Phasor(amplitude, phase) {}
+    Phasor(double amplitude, double phase, DegTag) : Phasor(amplitude, M_PI * phase / 180) {}
     Phasor(double real, double imag, AlgTag) : real(real), imag(imag) {}
 
     void SetPolar(const double &r, const double &angle);

@@ -59,7 +59,6 @@ CheckFlags operator~(CheckFlags a) {
 }
 
 std::ostream& operator<<(std::ostream& os, CheckFlags flags) {
-    uint8_t NOT_IN_RANGE = (1 << 6) | (1 << 7);
     uint8_t flags_val = static_cast<uint8_t>(flags);
     
     uint8_t valid_flags = flags_val & static_cast<uint8_t>(CheckFlags::ALL);
