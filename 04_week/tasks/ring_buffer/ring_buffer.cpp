@@ -154,16 +154,12 @@ void RingBuffer::Resize(size_t new_size) {
             new_current_size = size;
         }
     } else {
-        size_t j = begin+(size-new_size);
+        size_t j = (begin + (size - new_size)) % capacity;
         for (size_t i = 0; i < new_size; ++i) {
-            if (i+(size-new_size) < capacity){
-                new_buffer[i] = buffer[j];
-                new_current_size = new_size;
-            } else {
-                i = 0;
-            }
+            new_buffer[i] = buffer[j];
+            new_current_size = new_size;
 
-            if (j+1 < capacity){
+            if (j + 1 < capacity){
                 ++j;
             } else {
                 j = 0;
