@@ -1,7 +1,7 @@
 #include <string>
 
 
-struct  ControlBlock
+struct ControlBlock
 {
     unsigned int strong_count = 0;
     unsigned int weak_count = 0;
@@ -20,65 +20,65 @@ public:
     SharedPtr& operator=(const SharedPtr& other);
     SharedPtr& operator=(SharedPtr&& other) noexcept;
     explicit operator bool() const noexcept;
-    std::string& operator*() const;
-    std::string* operator->() const;
+    std::string& operator*() const noexcept;
+    std::string* operator->() const noexcept;
 
     // Методы
-    std::string* Get();
-    const std::string* Get() const;
+    std::string* Get() noexcept;
+    const std::string* Get() const noexcept;
     void Reset(std::string* data = nullptr);
-    void Swap(SharedPtr& other);
-    unsigned int UseCount() const;
+    void Swap(SharedPtr& other) noexcept;
+    unsigned int UseCount() const noexcept;
 
     // Дружественные функции
-    friend ControlBlock* GetControlBlock(const SharedPtr& obj);
+    friend ControlBlock* GetControlBlock(const SharedPtr& obj) noexcept;
 
 private:
     std::string* data_;
     ControlBlock* cb_;
 
     // Приватные методы
-    void DeleteData();
+    void DeleteData() noexcept;
 };
 
 class WeakPtr {
 public:
     // Конструкторы и деструктор
-    WeakPtr();
-    WeakPtr(const SharedPtr& other);
-    WeakPtr(const WeakPtr& other);
+    WeakPtr() noexcept;
+    WeakPtr(const SharedPtr& other) noexcept;
+    WeakPtr(const WeakPtr& other) noexcept;
     WeakPtr(WeakPtr&& other) noexcept;
     ~WeakPtr();
 
     // Операторы
-    WeakPtr& operator=(const SharedPtr& other);
-    WeakPtr& operator=(const WeakPtr& other);
+    WeakPtr& operator=(const SharedPtr& other) noexcept;
+    WeakPtr& operator=(const WeakPtr& other) noexcept;
     WeakPtr& operator=(WeakPtr&& other) noexcept;
-    const std::string& operator*() const;
-    const std::string* operator->() const;
+    const std::string& operator*() const noexcept;
+    const std::string* operator->() const noexcept;
 
     // Методы
-    const std::string* Get() const;
-    void Reset();
-    void Swap(WeakPtr& other);
-    unsigned int UseCount() const;
-    bool Expired() const;
+    const std::string* Get() const noexcept;
+    void Reset() noexcept;
+    void Swap(WeakPtr& other) noexcept;
+    unsigned int UseCount() const noexcept;
+    bool Expired() const noexcept;
     SharedPtr Lock() const;
 
     // Дружественные функции
-    friend ControlBlock* GetControlBlock(const WeakPtr& obj);
+    friend ControlBlock* GetControlBlock(const WeakPtr& obj) noexcept;
 
 private:
     const std::string* data_;
     ControlBlock* cb_;
 
     // Приватные методы
-    void DeleteData();
+    void DeleteData() noexcept;
 };
 
 // SharedPtr
 // Приватные методы
-void SharedPtr::DeleteData() {
+void SharedPtr::DeleteData() noexcept {
     if (cb_) {
         if (--cb_->strong_count == 0) { 
             delete data_; 
@@ -132,14 +132,14 @@ SharedPtr::operator bool() const noexcept {
     return data_;
 }
 
-std::string& SharedPtr::operator*() const { return *data_; }
+std::string& SharedPtr::operator*() const noexcept { return *data_; }
 
-std::string* SharedPtr::operator->() const { return data_; }
+std::string* SharedPtr::operator->() const noexcept { return data_; }
 
 // Методы
-std::string* SharedPtr::Get() { return data_; }
+std::string* SharedPtr::Get() noexcept { return data_; }
 
-const std::string* SharedPtr::Get() const { return data_; }
+const std::string* SharedPtr::Get() const noexcept { return data_; }
 
 void SharedPtr::Reset(std::string* data) {
     if (data_ != data) {
@@ -150,18 +150,18 @@ void SharedPtr::Reset(std::string* data) {
     }
 }
 
-void SharedPtr::Swap(SharedPtr& other) {
+void SharedPtr::Swap(SharedPtr& other) noexcept {
     std::swap(data_, other.data_);
     std::swap(cb_, other.cb_);
 }
 
-unsigned int SharedPtr::UseCount() const {
+unsigned int SharedPtr::UseCount() const noexcept {
     return (cb_) ? cb_->strong_count : 0;
 }
 
 // WeakPtr
 // Приватные методы
-void WeakPtr::DeleteData() {
+void WeakPtr::DeleteData() noexcept {
     if (cb_) {
         if (--cb_->weak_count == 0 && cb_->strong_count == 0) {
             delete cb_;
@@ -170,13 +170,13 @@ void WeakPtr::DeleteData() {
 }
 
 // Конструкторы и деструктор
-WeakPtr::WeakPtr() : data_(nullptr), cb_(nullptr) {}
+WeakPtr::WeakPtr() noexcept : data_(nullptr), cb_(nullptr) {}
 
-WeakPtr::WeakPtr(const SharedPtr& other) : data_(other.Get()), cb_(GetControlBlock(other)) {
+WeakPtr::WeakPtr(const SharedPtr& other) noexcept : data_(other.Get()), cb_(GetControlBlock(other)) {
     if (cb_) ++cb_->weak_count;
 }
 
-WeakPtr::WeakPtr(const WeakPtr& other) : data_(other.data_), cb_(other.cb_) {
+WeakPtr::WeakPtr(const WeakPtr& other) noexcept : data_(other.data_), cb_(other.cb_) {
     if (cb_) ++cb_->weak_count;
 }
 
@@ -190,7 +190,7 @@ WeakPtr::~WeakPtr() {
 }
 
 // Операторы
-WeakPtr& WeakPtr::operator=(const SharedPtr& other) {
+WeakPtr& WeakPtr::operator=(const SharedPtr& other) noexcept {
     DeleteData();
     data_ = other.Get(); 
     cb_ = GetControlBlock(other);
@@ -198,7 +198,7 @@ WeakPtr& WeakPtr::operator=(const SharedPtr& other) {
     return *this;
 }
 
-WeakPtr& WeakPtr::operator=(const WeakPtr& other) {
+WeakPtr& WeakPtr::operator=(const WeakPtr& other) noexcept {
     if (this != &other) {
         DeleteData();
         std::tie(data_, cb_) = std::tie(other.data_, other.cb_);
@@ -216,35 +216,35 @@ WeakPtr& WeakPtr::operator=(WeakPtr&& other) noexcept {
     return *this;
 }
 
-const std::string& WeakPtr::operator*() const {
+const std::string& WeakPtr::operator*() const noexcept {
     return *data_;
 }
 
-const std::string* WeakPtr::operator->() const {
+const std::string* WeakPtr::operator->() const noexcept {
     return data_;
 }
 
 // Методы
-const std::string* WeakPtr::Get() const {
+const std::string* WeakPtr::Get() const noexcept {
     return data_;
 }
 
-void WeakPtr::Reset() {
+void WeakPtr::Reset() noexcept {
     DeleteData();
     data_ = nullptr;
     cb_ = nullptr;
 }
 
-void WeakPtr::Swap(WeakPtr& other) {
+void WeakPtr::Swap(WeakPtr& other) noexcept {
     std::swap(data_, other.data_);
     std::swap(cb_, other.cb_);
 }
 
-unsigned int WeakPtr::UseCount() const {
+unsigned int WeakPtr::UseCount() const noexcept {
     return (cb_) ? cb_->strong_count : 0;
 }
 
-bool WeakPtr::Expired() const {
+bool WeakPtr::Expired() const noexcept {
     return !cb_ || cb_->strong_count == 0;
 }
 
@@ -264,19 +264,19 @@ SharedPtr MakeShared(std::string&& str) {
     return SharedPtr(new std::string(std::move(str)));
 }
 
-void Swap(SharedPtr& ptr_1, SharedPtr& ptr_2) {
+void Swap(SharedPtr& ptr_1, SharedPtr& ptr_2) noexcept {
     ptr_1.Swap(ptr_2);
 }
 
-void Swap(WeakPtr& ptr_1, WeakPtr& ptr_2) {
+void Swap(WeakPtr& ptr_1, WeakPtr& ptr_2) noexcept {
     ptr_1.Swap(ptr_2);
 }
 
 // Дружественные функции
-ControlBlock* GetControlBlock(const SharedPtr& obj) {
+ControlBlock* GetControlBlock(const SharedPtr& obj) noexcept {
     return obj.cb_;
 }
 
-ControlBlock* GetControlBlock(const WeakPtr& obj) {
+ControlBlock* GetControlBlock(const WeakPtr& obj) noexcept {
     return obj.cb_;
 }

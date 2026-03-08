@@ -21,20 +21,20 @@ public:
     SimpleList& operator=(SimpleList&& other) noexcept;
 
     // Методы 
-    void Swap(SimpleList& other);
-    size_t Size() const;
-    bool Empty() const;
+    void Swap(SimpleList& other) noexcept;
+    size_t Size() const noexcept;
+    bool Empty() const noexcept;
     void PushBack(const std::string& value);
     void PushFront(const std::string& value);
     void PushBack(std::string&& value);
     void PushFront(std::string&& value);
-    void PopBack();
-    void PopFront();
-    std::string& Back();
-    std::string& Front();
-    const std::string& Front() const;
-    const std::string& Back() const;
-    void Clear();
+    void PopBack() noexcept;
+    void PopFront() noexcept;
+    std::string& Back() noexcept;
+    std::string& Front() noexcept;
+    const std::string& Front() const noexcept;
+    const std::string& Back() const noexcept;
+    void Clear() noexcept;
 
 private:
     Node* head_;
@@ -42,21 +42,21 @@ private:
     size_t size_;
 
     // Приватные методы
-    void Unlink(Node* ptr_node);
-    void FrontLink(Node* ptr_new_node, Node* ptr_node);
-    void BackLink(Node* ptr_new_node, Node* ptr_node);
+    void Unlink(Node* ptr_node) noexcept;
+    void FrontLink(Node* ptr_new_node, Node* ptr_node) noexcept;
+    void BackLink(Node* ptr_new_node, Node* ptr_node) noexcept;
     void CopyList(const SimpleList& other);
-    void CreateFirstNode(Node* ptr_new_node);
+    void CreateFirstNode(Node* ptr_new_node) noexcept;
 };
 
 // Приватные методы
-void SimpleList::CreateFirstNode(Node* ptr_new_node) {
+void SimpleList::CreateFirstNode(Node* ptr_new_node) noexcept {
     head_ = ptr_new_node;
     tail_ = ptr_new_node;
     ++size_;
 }
 
-void SimpleList::Unlink(Node* ptr_node) {
+void SimpleList::Unlink(Node* ptr_node) noexcept {
     if (!ptr_node) return;
     
     if (head_ == ptr_node && tail_ == ptr_node) {
@@ -77,7 +77,7 @@ void SimpleList::Unlink(Node* ptr_node) {
     --size_;
 }
 
-void SimpleList::FrontLink(Node* ptr_new_node, Node* ptr_node) {
+void SimpleList::FrontLink(Node* ptr_new_node, Node* ptr_node) noexcept {
     if (!ptr_new_node) return;
 
     if (!ptr_node) {
@@ -96,7 +96,7 @@ void SimpleList::FrontLink(Node* ptr_new_node, Node* ptr_node) {
     ++size_;
 }
 
-void SimpleList::BackLink(Node* ptr_new_node, Node* ptr_node) {
+void SimpleList::BackLink(Node* ptr_new_node, Node* ptr_node) noexcept {
     if (!ptr_new_node) return;
 
     if (!ptr_node) {
@@ -158,17 +158,17 @@ SimpleList& SimpleList::operator=(SimpleList&& other) noexcept {
 }
 
 // Методы 
-void SimpleList::Swap(SimpleList& other) {
+void SimpleList::Swap(SimpleList& other) noexcept {
     std::swap(head_, other.head_);
     std::swap(tail_, other.tail_);
     std::swap(size_, other.size_);
 }
 
-size_t SimpleList::Size() const {
+size_t SimpleList::Size() const noexcept {
     return size_;
 }
 
-bool SimpleList::Empty() const {
+bool SimpleList::Empty() const noexcept {
     return (size_ == 0);
 }
 
@@ -192,32 +192,31 @@ void SimpleList::PushFront(std::string&& value) {
     BackLink(ptr_new_node, head_);
 }
 
-void SimpleList::PopBack() {
+void SimpleList::PopBack() noexcept {
     Unlink(tail_);
 }
 
-void SimpleList::PopFront() {
+void SimpleList::PopFront() noexcept {
     Unlink(head_);
 }
 
-
-std::string& SimpleList::Back() {
+std::string& SimpleList::Back() noexcept {
     return tail_->data;
 }
 
-std::string& SimpleList::Front() {
+std::string& SimpleList::Front() noexcept {
     return head_->data;
 }
 
-const std::string& SimpleList::Back() const {
+const std::string& SimpleList::Back() const noexcept {
     return tail_->data;
 }
 
-const std::string& SimpleList::Front() const {
+const std::string& SimpleList::Front() const noexcept {
     return head_->data;
 }
 
-void SimpleList::Clear() {
+void SimpleList::Clear() noexcept {
     Node* current = head_;
     while (current) {
         delete std::exchange(current, current->next);
@@ -226,6 +225,6 @@ void SimpleList::Clear() {
 }
 
 // Внешние функции
-void Swap(SimpleList& lhs, SimpleList& rhs) {
+void Swap(SimpleList& lhs, SimpleList& rhs) noexcept {
     lhs.Swap(rhs);
 }

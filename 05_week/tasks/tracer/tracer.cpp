@@ -15,12 +15,12 @@ public:
     Tracer& operator=(Tracer&& other) noexcept;
 
     // Методы
-    unsigned int Id() const;
-    const std::string& Name() const;
-    const char* Data() const;
+    unsigned int Id() const noexcept;
+    const std::string& Name() const noexcept;
+    const char* Data() const noexcept;
 
     // Статические методы
-    static void ResetStats();
+    static void ResetStats() noexcept;
 
     // Счётчики
     static unsigned int count;        // Общее количество созданных объектов
@@ -95,13 +95,13 @@ Tracer& Tracer::operator=(Tracer&& other) noexcept {
 }
 
 // Методы
-unsigned int Tracer::Id() const { return id_; }
+unsigned int Tracer::Id() const noexcept { return id_; }
 
-const std::string& Tracer::Name() const { return name_; }
+const std::string& Tracer::Name() const noexcept { return name_; }
 
-const char* Tracer::Data() const { return name_.data(); }
+const char* Tracer::Data() const noexcept { return name_.data(); }
 
-void Tracer::ResetStats() {
+void Tracer::ResetStats() noexcept {
     count = 0;
     default_ctor = 0;
     str_ctor = 0;

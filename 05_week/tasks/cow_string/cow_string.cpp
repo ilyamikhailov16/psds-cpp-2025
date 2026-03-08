@@ -18,23 +18,23 @@ public:
     CowString();
     CowString(const char* str);
     CowString(const std::string& str);
-    CowString(const CowString& other);
-    CowString(CowString&& other) noexcept;
+    CowString(const CowString& other) noexcept;
+    CowString(CowString&& other);
     ~CowString();
 
     // Операторы присваивания
-    CowString& operator=(const CowString& other);
-    CowString& operator=(CowString&& other) noexcept;
+    CowString& operator=(const CowString& other) noexcept;
+    CowString& operator=(CowString&& other);
 
     // Методы НЕ вызывающие копирования
-    size_t Size() const;
-    const char* ToCstr() const;
+    size_t Size() const noexcept;
+    const char* ToCstr() const noexcept;
     std::string ToString() const;
     const char& operator[](size_t pos) const noexcept;
-    operator const char*() const;
-    bool Empty() const;  
-    size_t Find(const char* str) const;  
-    size_t Find(char ch) const;
+    operator const char*() const noexcept;
+    bool Empty() const noexcept;  
+    size_t Find(const char* str) const noexcept;  
+    size_t Find(char ch) const noexcept;
     CowString Substr(size_t begin_pos = 0, size_t length = npos) const;
 
     // Методы, обеспечивающие модификацию на собственной копии данных
@@ -53,7 +53,6 @@ private:
 
 // Статические методы
 CowStringData* CowString::CreateCowStringData(size_t length) {
-    // Выделяем память: размер структуры + длина строки + 1 для '\0'
     size_t total_size = sizeof(CowStringData) + length;
     CowStringData* data = reinterpret_cast<CowStringData*>(new char[total_size]);
     data->str_length = length;
@@ -83,11 +82,11 @@ CowString::CowString(const char* str) : data_(CreateCowStringData(str ? strlen(s
 
 CowString::CowString(const std::string& str) : CowString(str.c_str()) {}
 
-CowString::CowString(const CowString& other) : data_(other.data_) {
+CowString::CowString(const CowString& other) noexcept : data_(other.data_) {
     ++data_->ref_count;
 }
 
-CowString::CowString(CowString&& other) noexcept : data_(other.data_) {
+CowString::CowString(CowString&& other) : data_(other.data_) {
     other.data_ = CreateCowStringData(0);
 }
 
@@ -98,7 +97,7 @@ CowString::~CowString() {
 }
 
 // Операторы присваивания
-CowString& CowString::operator=(const CowString& other) {
+CowString& CowString::operator=(const CowString& other) noexcept {
     if (this != &other) {
         if (--data_->ref_count == 0) {
             delete[] data_;
@@ -109,7 +108,7 @@ CowString& CowString::operator=(const CowString& other) {
     return *this;
 }
 
-CowString& CowString::operator=(CowString&& other) noexcept {
+CowString& CowString::operator=(CowString&& other) {
     if (this != &other) {
         if (--data_->ref_count == 0) {
             delete[] data_;
@@ -121,11 +120,11 @@ CowString& CowString::operator=(CowString&& other) noexcept {
 }
 
 // Методы НЕ вызывающие копирования
-size_t CowString::Size() const {
+size_t CowString::Size() const noexcept {
     return data_->str_length;
 }
 
-const char* CowString::ToCstr() const {
+const char* CowString::ToCstr() const noexcept {
     return data_->str_data;
 }
 
@@ -137,15 +136,15 @@ const char& CowString::operator[](size_t pos) const noexcept {
     return data_->str_data[pos];
 }
 
-CowString::operator const char*() const {
+CowString::operator const char*() const noexcept {
     return data_->str_data;
 }
 
-bool CowString::Empty() const {
+bool CowString::Empty() const noexcept {
     return (data_->str_length == 0);
 }  
 
-size_t CowString::Find(const char* str) const {
+size_t CowString::Find(const char* str) const noexcept {
     if (!str) return 0;
 
     if (data_->str_length == 0) {
@@ -166,7 +165,7 @@ size_t CowString::Find(const char* str) const {
     return npos;
 }  
 
-size_t CowString::Find(char ch) const {
+size_t CowString::Find(char ch) const noexcept {
     for (size_t i = 0; i < data_->str_length; ++i) {
         if (data_->str_data[i] == ch) {
             return i;

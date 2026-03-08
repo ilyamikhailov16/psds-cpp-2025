@@ -22,22 +22,24 @@ public:
     bool operator!=(const SimpleVector& other) const noexcept;
 
     // Методы
-    void Swap(SimpleVector& other);
-    size_t Size() const;
-    size_t Capacity() const;
-    bool Empty() const;
-    const int* Data() const;
+    void Swap(SimpleVector& other) noexcept;
+    size_t Size() const noexcept;
+    size_t Capacity() const noexcept;
+    bool Empty() const noexcept;
+    const int* Data() const noexcept;
     void PushBack(int el);
-    void PopBack();
+    void PopBack() noexcept;
     int* Insert(size_t pos, int el);
     int* Insert(const int* pos_ptr, int el);
     int* Erase(size_t pos);
     int* Erase(const int* pos_ptr);
-    void Clear();
+    void Clear() noexcept;
     void Resize(size_t size, int el = 0);
     void Reserve(size_t new_capacity);
-    int* Begin() const;
-    int* End() const;
+    int* Begin() noexcept;
+    int* End() noexcept;
+    const int* Begin() const noexcept;
+    const int* End() const noexcept;
 
 private:
     int* data_;
@@ -118,25 +120,25 @@ bool SimpleVector::operator!=(const SimpleVector& other) const noexcept {
 }
 
 // Методы
-void SimpleVector::Swap(SimpleVector& other) {
+void SimpleVector::Swap(SimpleVector& other) noexcept {
     std::swap(data_, other.data_);
     std::swap(size_, other.size_);
     std::swap(capacity_, other.capacity_);
 }
 
-size_t SimpleVector::Size() const {
+size_t SimpleVector::Size() const noexcept {
     return size_;
 }
 
-size_t SimpleVector::Capacity() const {
+size_t SimpleVector::Capacity() const noexcept {
     return capacity_;
 }
 
-bool SimpleVector::Empty() const {
+bool SimpleVector::Empty() const noexcept {
     return (size_ == 0);
 }
 
-const int* SimpleVector::Data() const {
+const int* SimpleVector::Data() const noexcept {
     return data_;
 }
 
@@ -148,7 +150,7 @@ void SimpleVector::PushBack(int el) {
     data_[size_++] = el;
 }
 
-void SimpleVector::PopBack() {
+void SimpleVector::PopBack() noexcept {
     if (size_ > 0) { --size_; }
 }
 
@@ -189,7 +191,7 @@ int* SimpleVector::Erase(const int* pos_ptr) {
     return Erase(pos);
 }
 
-void SimpleVector::Clear() {
+void SimpleVector::Clear() noexcept {
     size_ = 0;
 }
 
@@ -210,31 +212,39 @@ void SimpleVector::Reserve(size_t new_capacity) {
     Realloc(new_capacity);
 }
 
-int* SimpleVector::Begin() const {
+int* SimpleVector::Begin() noexcept {
     return data_;
 }
 
-int* SimpleVector::End() const {
+int* SimpleVector::End() noexcept {
+    return data_ + size_;
+}
+
+const int* SimpleVector::Begin() const noexcept {
+    return data_;
+}
+
+const int* SimpleVector::End() const noexcept {
     return data_ + size_;
 }
 
 // Внешние функции для совместимости с STL
-int* begin(SimpleVector& vec) {
+int* begin(SimpleVector& vec) noexcept {
     return vec.Begin();
 }
 
-int* end(SimpleVector& vec) {
+int* end(SimpleVector& vec) noexcept {
     return vec.End();
 }
 
-const int* begin(const SimpleVector& vec) {
+const int* begin(const SimpleVector& vec) noexcept {
     return vec.Begin();
 }
 
-const int* end(const SimpleVector& vec) {
+const int* end(const SimpleVector& vec) noexcept {
     return vec.End();
 }
 
-void swap(SimpleVector& lhs, SimpleVector& rhs) {
+void swap(SimpleVector& lhs, SimpleVector& rhs) noexcept {
     lhs.Swap(rhs);
 }
